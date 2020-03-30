@@ -1,6 +1,9 @@
 package loggable
 
 import (
+	"log"
+
+	spew "github.com/davecgh/go-spew"
 	"github.com/jinzhu/gorm"
 )
 
@@ -22,6 +25,9 @@ func Register(db *gorm.DB, opts ...Option) (Plugin, error) {
 	for _, option := range opts {
 		option(&o)
 	}
+	log.Println("gorm-loggable options registered:")
+	spew.Dump(o)
+
 	p := Plugin{db: db, opts: o}
 	callback := db.Callback()
 	callback.Query().After("gorm:after_query").Register("loggable:query", p.trackEntity)
